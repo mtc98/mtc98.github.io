@@ -1,0 +1,295 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+}
+
+.game-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 20px 15px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 2.2em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.game-info {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.player-info {
+    display: flex;
+    gap: 20px;
+}
+
+.player {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.black-player {
+    background: #333;
+    color: white;
+}
+
+.white-player {
+    background: #f0f0f0;
+    color: #333;
+    border: 2px solid #ddd;
+}
+
+.current-player {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.game-status {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #555;
+    min-width: 150px;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    background: #667eea;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+button:hover {
+    background: #5a67d8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.game-board {
+    margin: 15px auto;
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    gap: 0;
+    background: #8b4513;
+    border: 8px solid #8b4513;
+    border-radius: 10px;
+    width: min(450px, 95vw);
+    aspect-ratio: 1 / 1;
+    position: relative;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    padding: 0;
+}
+
+.board-cell {
+    background: #ddb366;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0.5px solid #8b4513;
+    min-height: 28px;
+}
+
+.board-cell::before {
+    content: '';
+    display: block;
+    padding-bottom: 100%;
+}
+
+.board-cell:hover {
+    background: #c9a854;
+}
+
+/* 添加星位標記 */
+.board-cell.star-point {
+    position: relative;
+}
+
+.board-cell.star-point::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #8b4513;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+
+.board-cell:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.game-piece {
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    animation: placePiece 0.3s ease-out;
+    z-index: 10;
+}
+
+.game-piece.black {
+    background: radial-gradient(circle at 25% 25%, #666, #111, #000);
+    border: 3px solid #000;
+}
+
+.game-piece.white {
+    background: radial-gradient(circle at 25% 25%, #fff, #eee, #ccc);
+    border: 3px solid #e8e8e8;
+}
+
+.game-piece:last-move {
+    animation: highlight 1s ease-in-out infinite alternate;
+}
+
+@keyframes placePiece {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes highlight {
+    0% {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 0 rgba(102, 126, 234, 0.7);
+    }
+    100% {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+}
+
+/* 棋盤格線樣式 */
+.board-cell:nth-child(15n+1) {
+    border-left: none;
+}
+
+.board-cell:nth-child(15n) {
+    border-right: none;
+}
+
+/* 響應式設計 */
+@media (max-width: 600px) {
+    .game-container {
+        padding: 10px 8px;
+        margin: 5px;
+    }
+
+    .game-board {
+        width: min(380px, 95vw);
+        margin: 10px auto;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    .game-info {
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 400px) {
+    .game-board {
+        width: min(320px, 95vw);
+    }
+
+    .player-info {
+        gap: 10px;
+    }
+}
+
+.game-result {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.result-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: resultShow 0.5s ease-out;
+}
+
+@keyframes resultShow {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.result-content h2 {
+    margin-bottom: 20px;
+    font-size: 1.8em;
+    color: #333;
+}
+
+#playAgainBtn {
+    background: #667eea;
+    font-size: 1.1em;
+    padding: 12px 24px;
+}

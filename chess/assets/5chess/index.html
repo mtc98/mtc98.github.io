@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五指棋 - 人機對戰</title>
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <div class="game-container">
+
+        <div class="game-info">
+            <div class="player-info">
+                <span class="player black-player">玩家 (黑棋)</span>
+                <span class="player white-player">電腦 (白棋)</span>
+            </div>
+            <div class="game-status" id="gameStatus">輪到玩家下棋</div>
+            <div class="controls">
+                <button id="restartBtn">重新開始</button>
+                <button id="undoBtn">悔棋</button>
+            </div>
+        </div>
+        
+        <div class="game-board" id="gameBoard">
+            <!-- 棋盤將由JavaScript動態生成 -->
+        </div>
+        
+        <div class="game-result" id="gameResult" style="display: none;">
+            <div class="result-content">
+                <h2 id="resultText"></h2>
+                <button id="playAgainBtn">再玩一次</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 音效元素 -->
+    <audio id="placeSound" preload="none">
+        <source src="sounds/place.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winSound" preload="none">
+        <source src="sounds/win.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="js/Board.js"></script>
+    <script src="js/AI.js"></script>
+    <script src="js/Game.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

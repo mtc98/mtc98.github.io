@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五指棋測試頁面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #5a67d8;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>五指棋遊戲測試頁面</h1>
+    
+    <div class="test-section">
+        <h2>遊戲預覽</h2>
+        <iframe src="index.html" title="五指棋遊戲"></iframe>
+    </div>
+    
+    <div class="test-section">
+        <h2>測試控制項</h2>
+        <button class="test-button" onclick="runBasicTests()">運行基本測試</button>
+        <button class="test-button" onclick="testGameLogic()">測試遊戲邏輯</button>
+        <button class="test-button" onclick="testAI()">測試AI功能</button>
+        <button class="test-button" onclick="showGameStats()">顯示遊戲統計</button>
+        
+        <div id="testResults"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>遊戲說明</h2>
+        <div class="info">
+            <h3>如何遊玩：</h3>
+            <ol>
+                <li>點擊棋盤上的任意位置下黑棋（人類玩家先下）</li>
+                <li>電腦會自動下白棋</li>
+                <li>率先連成五顆同色棋子者獲勝</li>
+                <li>支援悔棋功能（可悔兩步）</li>
+            </ol>
+            
+            <h3>鍵盤快捷鍵：</h3>
+            <ul>
+                <li>Ctrl+R: 重新開始遊戲</li>
+                <li>Ctrl+Z: 悔棋</li>
+                <li>Ctrl+S: 切換音效</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function addTestResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.textContent = new Date().toLocaleTimeString() + ': ' + message;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function runBasicTests() {
+            addTestResult('開始運行基本測試...', 'info');
+            
+            try {
+                // 測試DOM元素是否存在
+                const gameBoard = document.getElementById('gameBoard');
+                if (gameBoard) {
+                    addTestResult('✓ 棋盤元素載入成功', 'success');
+                } else {
+                    addTestResult('✗ 棋盤元素載入失敗', 'error');
+                }
+                
+                // 測試CSS載入
+                const gameCSS = document.querySelector('link[href="css/game.css"]');
+                if (gameCSS) {
+                    addTestResult('✓ CSS樣式載入成功', 'success');
+                } else {
+                    addTestResult('✗ CSS樣式載入失敗', 'error');
+                }
+                
+                // 測試JavaScript載入
+                if (typeof Board !== 'undefined') {
+                    addTestResult('✓ Board類載入成功', 'success');
+                } else {
+                    addTestResult('✗ Board類載入失敗', 'error');
+                }
+                
+                if (typeof Game !== 'undefined') {
+                    addTestResult('✓ Game類載入成功', 'success');
+                } else {
+                    addTestResult('✗ Game類載入失敗', 'error');
+                }
+                
+                if (typeof AI !== 'undefined') {
+                    addTestResult('✓ AI類載入成功', 'success');
+                } else {
+                    addTestResult('✗ AI類載入失敗', 'error');
+                }
+                
+                addTestResult('基本測試完成', 'info');
+                
+            } catch (error) {
+                addTestResult('測試過程中發生錯誤: ' + error.message, 'error');
+            }
+        }
+
+        function testGameLogic() {
+            addTestResult('開始測試遊戲邏輯...', 'info');
+            
+            try {
+                // 創建測試用的棋盤
+                const testBoard = new Board();
+                testBoard.init();
+                
+                // 測試基本功能
+                const canPlace = testBoard.placePiece(7, 7, 1);
+                if (canPlace) {
+                    addTestResult('✓ 棋子放置功能正常', 'success');
+                } else {
+                    addTestResult('✗ 棋子放置功能異常', 'error');
+                }
+                
+                // 測試勝利檢查
+                // 創建一個測試情境：橫向五連
+                for (let col = 0; col < 5; col++) {
+                    testBoard.placePiece(7, col, 1);
+                }
+                
+                const isWin = testBoard.checkWin(7, 4, 1);
+                if (isWin) {
+                    addTestResult('✓ 勝利檢查功能正常', 'success');
+                } else {
+                    addTestResult('✗ 勝利檢查功能異常', 'error');
+                }
+                
+                addTestResult('遊戲邏輯測試完成', 'info');
+                
+            } catch (error) {
+                addTestResult('遊戲邏輯測試失敗: ' + error.message, 'error');
+            }
+        }
+
+        function testAI() {
+            addTestResult('開始測試AI功能...', 'info');
+            
+            try {
+                const testBoard = new Board();
+                testBoard.init();
+                
+                // 創建AI實例
+                const ai = new AI(testBoard);
+                
+                // 測試AI移動建議
+                const move = ai.getBestMove();
+                if (move && typeof move.row === 'number' && typeof move.col === 'number') {
+                    addTestResult(`✓ AI建議移動: (${move.row}, ${move.col})`, 'success');
+                } else {
+                    addTestResult('✗ AI移動建議異常', 'error');
+                }
+                
+                addTestResult('AI測試完成', 'info');
+                
+            } catch (error) {
+                addTestResult('AI測試失敗: ' + error.message, 'error');
+            }
+        }
+
+        function showGameStats() {
+            addTestResult('顯示遊戲統計資訊...', 'info');
+            
+            try {
+                if (window.game) {
+                    const stats = window.game.getState();
+                    addTestResult(`當前玩家: ${stats.currentPlayer === 1 ? '人類' : '電腦'}`, 'success');
+                    addTestResult(`遊戲狀態: ${stats.gameOver ? '結束' : '進行中'}`, 'success');
+                    addTestResult(`總步數: ${stats.moves.length}`, 'success');
+                } else {
+                    addTestResult('遊戲實例不存在', 'error');
+                }
+            } catch (error) {
+                addTestResult('統計資訊獲取失敗: ' + error.message, 'error');
+            }
+        }
+
+        // 自動運行基本測試
+        window.addEventListener('load', function() {
+            setTimeout(runBasicTests, 1000);
+        });
+    </script>
+</body>
+</html>
