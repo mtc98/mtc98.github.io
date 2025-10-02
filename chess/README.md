@@ -84,10 +84,12 @@
 **目標**: 將 Web 版本部署到 `https://mtc98.github.io/chess`
 
 **部署步驟**:
-1. Build Web 版本
+1. Build Web 版本（指定 base-href 為子目錄）
    ```bash
-   flutter build web --release
+   flutter build web --release --base-href /chess/
    ```
+
+   **重要**: 必須使用 `--base-href /chess/` 參數，否則資源路徑會錯誤，導致頁面無法正確載入
 
 2. Clone GitHub Pages 倉庫
    ```bash
@@ -111,6 +113,10 @@
 5. 訪問部署的網站
    - URL: **https://mtc98.github.io/chess**
    - GitHub Pages 通常需要 1-3 分鐘更新
+
+**常見問題**:
+- 如果頁面顯示空白或載入錯誤，檢查 `index.html` 中的 `<base href="/chess/">` 是否正確
+- 瀏覽器快取問題：使用強制重新整理（Ctrl+F5 或 Cmd+Shift+R）
 
 **使用的工具**:
 - GitHub CLI (`gh`) - 已使用 mtc98 帳號登入
